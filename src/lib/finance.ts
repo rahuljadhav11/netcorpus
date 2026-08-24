@@ -267,6 +267,10 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
   let lumpCloseAmount = 0;
   let epfMergedAtRetirement = 0; // EPF balance moved to SIP at retirement (tax-free)
   let npsBalanceAtRetirement = 0; // captured before NPS is split at retirement
+  // Pre-LTCG sipBalance/costBasis captured at retirement — used for computeTax display.
+  // The simulation deducts LTCG immediately so drawdown runs on the net corpus.
+  let sipBalancePreLtcg = 0;
+  let sipCostBasisPreLtcg = 0;
   const existingAssetValuesAtRetirement: { name: string; assetClass: AssetClass; value: number; annualReturnPct: number }[] = [];
 
   // Track annual-event lump draws for the silent summary.
@@ -345,6 +349,25 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
           closures.push({ loanId: l.id, name: l.name, monthIndex: m, monthLabel: monthLabel(m), totalInterestPaid: l.totalInterestPaid });
         }
       }
+    }
+
+    // LTCG tax: compute and deduct at the moment of retirement so the entire
+    // post-retirement drawdown runs on net (after-tax) corpus. Pre-deduction
+    // values are preserved in sipBalancePreLtcg / sipCostBasisPreLtcg so that
+    // computeTax (called post-loop) can report the correct gross/net breakdown.
+    if (m === retirementMonthIndex) {
+      const npsLumpNow = inputs.nps.enabled
+        ? npsBalanceAtRetirement * (1 - inputs.nps.annuityAllocationPct / 100)
+        : 0;
+      // EPF and NPS lump were added at full cost basis — only pure SIP gains attract LTCG.
+      const sipPure = sipBalance - epfMergedAtRetirement - npsLumpNow;
+      const sipPureBasis = Math.max(0, sipCostBasis - epfMergedAtRetirement - npsLumpNow);
+      const sipGains = Math.max(0, sipPure - sipPureBasis);
+      const ltcgTaxable = Math.max(0, sipGains - inputs.ltcgAnnualExemption);
+      const ltcgDue = ltcgTaxable * (inputs.ltcgRatePct / 100);
+      sipBalancePreLtcg = sipBalance;
+      sipCostBasisPreLtcg = sipCostBasis;
+      sipBalance = Math.max(0, sipBalance - ltcgDue);
     }
 
     // Other-income for this month (sums streams that are active).
@@ -501,10 +524,8 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
       if (g.targetMonth === m) {
         const need = g.inflatedCost;
         const fromSip = Math.min(sipBalance, need);
-        // Reduce cost basis proportionally.
-        if (sipBalance + fromSip > 0.01) {
-          const before = sipBalance + fromSip;
-          sipCostBasis = sipCostBasis * (before === 0 ? 0 : (sipBalance / before));
+        if (sipBalance > 0.01) {
+          sipCostBasis = sipCostBasis * (sipBalance - fromSip) / sipBalance;
         }
         sipBalance -= fromSip;
         const fromEpf = Math.min(epfBalance, need - fromSip);
@@ -527,9 +548,8 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
         const annualNow = e.currentMonthly * 12;
         if (annualNow <= 0.01) continue;
         const fromSip = Math.min(sipBalance, annualNow);
-        if (sipBalance + fromSip > 0.01) {
-          const before = sipBalance + fromSip;
-          sipCostBasis = sipCostBasis * (before === 0 ? 0 : (sipBalance / before));
+        if (sipBalance > 0.01) {
+          sipCostBasis = sipCostBasis * (sipBalance - fromSip) / sipBalance;
         }
         sipBalance -= fromSip;
         const fromEpf = Math.min(epfBalance, annualNow - fromSip);
@@ -655,18 +675,17 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
   }
 
   const atRetirement = monthly[Math.min(monthly.length - 1, retirementMonthIndex)];
-  const corpusAtRetirement = atRetirement ? atRetirement.totalCorpus : 0;
 
-  // atRetirement.sipBalance includes EPF lump + NPS 60% lump (both merged at retirement).
-  // Subtract them back so computeTax can report each component separately and correctly.
-  // computeTax re-adds epfBalance and nps.lump to compute grossCorpus — so they must not
-  // already be inside sipBalance.
+  // sipBalancePreLtcg / sipCostBasisPreLtcg were captured in the loop just before the
+  // LTCG deduction, so they reflect: SIP_pure + EPF_lump + NPS_lump − loan_close.
+  // Subtract EPF and NPS back out so computeTax can attribute each component separately
+  // (it re-adds them via epfBalance and npsBalance args to form grossCorpus).
   const npsLumpMerged = inputs.nps.enabled
     ? npsBalAtRetirement * (1 - inputs.nps.annuityAllocationPct / 100)
     : 0;
   const tax = computeTax({
-    sipBalance: Math.max(0, (atRetirement?.sipBalance ?? 0) - epfMergedAtRetirement - npsLumpMerged),
-    sipCostBasis: Math.max(0, (atRetirement?.sipCostBasis ?? 0) - epfMergedAtRetirement - npsLumpMerged),
+    sipBalance: Math.max(0, sipBalancePreLtcg - epfMergedAtRetirement - npsLumpMerged),
+    sipCostBasis: Math.max(0, sipCostBasisPreLtcg - epfMergedAtRetirement - npsLumpMerged),
     epfBalance: epfMergedAtRetirement,
     epsBalance: atRetirement?.epsBalance ?? 0,
     epsMonthlyPension: pensionAtRetirement,
@@ -677,6 +696,11 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
     ltcgRatePct: inputs.ltcgRatePct,
     ltcgAnnualExemption: inputs.ltcgAnnualExemption,
   });
+
+  // Spendable corpus at retirement = net corpus after tax, after loan close.
+  // Use this as the canonical corpusAtRetirement — it's what the simulation actually
+  // draws from (sipBalance in the loop was already reduced by LTCG at retirementMonthIndex).
+  const corpusAtRetirement = tax.netCorpus;
 
   const real = {
     corpusAtRetirement: deflate(corpusAtRetirement, inputs.inflationPct, yrsToRet),
