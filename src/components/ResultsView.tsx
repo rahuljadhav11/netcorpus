@@ -50,14 +50,15 @@ export default function ResultsView({ inputs, result, scenarios }: Props) {
   const debtFreeLabel = r.debtFreeMonthIndex !== null
     ? monthLabel(r.debtFreeMonthIndex)
     : "Not within horizon";
+  const hasOtherAssets = r.yearly.some((y) => y.otherAssetsBalance > 0);
 
   const downloadCsv = () => {
     const rows = [
-      ["Year offset","Age","Salary (yr)","Expense (yr)","EMI paid","Surplus","SIP contrib","SIP balance","EPF balance","EPS balance","Other assets","Loan balance","Total corpus"],
+      ["Year offset","Age","Income (yr)","Expense (yr)","EMI paid","Surplus","SIP contrib","SIP balance","EPF balance","EPS balance","Other assets","Loan balance","Equity corpus"],
       ...r.yearly.map((y) => [
         y.yearOffset,
         y.age.toFixed(0),
-        Math.round(y.salary),
+        Math.round(y.salary + y.otherIncome),
         Math.round(y.expense),
         Math.round(y.emiPaid),
         Math.round(y.surplus),
@@ -363,12 +364,13 @@ export default function ResultsView({ inputs, result, scenarios }: Props) {
               <thead className="text-slate-500 sticky top-0 bg-white">
                 <tr>
                   <th className="py-2 pr-3 text-left">Age</th>
-                  <th className="py-2 pr-3 text-right">Salary/yr</th>
+                  <th className="py-2 pr-3 text-right">Income/yr</th>
                   <th className="py-2 pr-3 text-right">Expense/yr</th>
                   <th className="py-2 pr-3 text-right">EMI paid</th>
                   <th className="py-2 pr-3 text-right">SIP contrib.</th>
                   <th className="py-2 pr-3 text-right">Loan bal.</th>
-                  <th className="py-2 pr-3 text-right">Corpus</th>
+                  {hasOtherAssets && <th className="py-2 pr-3 text-right">Other assets</th>}
+                  <th className="py-2 pr-3 text-right">Equity corpus</th>
                 </tr>
               </thead>
               <tbody>
@@ -379,11 +381,12 @@ export default function ResultsView({ inputs, result, scenarios }: Props) {
                   return (
                     <tr key={y.yearOffset} className="border-t border-slate-100">
                       <td className="py-1.5 pr-3">{y.age.toFixed(0)}</td>
-                      <td className="py-1.5 pr-3 text-right">{inr(adjust(y.salary))}</td>
+                      <td className="py-1.5 pr-3 text-right">{inr(adjust(y.salary + y.otherIncome))}</td>
                       <td className="py-1.5 pr-3 text-right">{inr(adjust(y.expense))}</td>
                       <td className="py-1.5 pr-3 text-right">{inr(adjust(y.emiPaid))}</td>
                       <td className="py-1.5 pr-3 text-right">{inr(adjust(y.sipContribution))}</td>
                       <td className="py-1.5 pr-3 text-right">{inr(adjust(y.totalLoanBalance))}</td>
+                      {hasOtherAssets && <td className="py-1.5 pr-3 text-right text-amber-700">{inr(adjust(y.otherAssetsBalance))}</td>}
                       <td className="py-1.5 pr-3 text-right font-medium">{inr(adjust(y.totalCorpus))}</td>
                     </tr>
                   );
@@ -399,12 +402,13 @@ export default function ResultsView({ inputs, result, scenarios }: Props) {
                 <tr>
                   <th className="py-2 pr-3 text-left">Month</th>
                   <th className="py-2 pr-3 text-left">Age</th>
-                  <th className="py-2 pr-3 text-right">Salary</th>
+                  <th className="py-2 pr-3 text-right">Income</th>
                   <th className="py-2 pr-3 text-right">Expense</th>
                   <th className="py-2 pr-3 text-right">EMI</th>
                   <th className="py-2 pr-3 text-right">SIP</th>
                   <th className="py-2 pr-3 text-right">Loan bal.</th>
-                  <th className="py-2 pr-3 text-right">Corpus</th>
+                  {hasOtherAssets && <th className="py-2 pr-3 text-right">Other assets</th>}
+                  <th className="py-2 pr-3 text-right">Equity corpus</th>
                 </tr>
               </thead>
               <tbody>
@@ -416,11 +420,12 @@ export default function ResultsView({ inputs, result, scenarios }: Props) {
                     <tr key={mS.monthIndex} className="border-t border-slate-100">
                       <td className="py-1 pr-3 text-slate-600">{monthLabel(mS.monthIndex)}</td>
                       <td className="py-1 pr-3 text-slate-600 tabular-nums">{Math.floor(mS.age)}y {(mS.monthIndex % 12) + 1}m</td>
-                      <td className="py-1 pr-3 text-right">{inr(adjust(mS.salary))}</td>
+                      <td className="py-1 pr-3 text-right">{inr(adjust(mS.salary + mS.otherIncome))}</td>
                       <td className="py-1 pr-3 text-right">{inr(adjust(mS.expense))}</td>
                       <td className="py-1 pr-3 text-right">{inr(adjust(mS.loanPayments))}</td>
                       <td className="py-1 pr-3 text-right">{inr(adjust(mS.sipContribution))}</td>
                       <td className="py-1 pr-3 text-right">{inr(adjust(mS.totalLoanBalance))}</td>
+                      {hasOtherAssets && <td className="py-1 pr-3 text-right text-amber-700">{inr(adjust(mS.otherAssetsBalance))}</td>}
                       <td className="py-1 pr-3 text-right font-medium">{inr(adjust(mS.totalCorpus))}</td>
                     </tr>
                   );

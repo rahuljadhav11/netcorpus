@@ -1,53 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ════════════════════════════════════════════════════════════════════════════
+   THEME TOKENS
+   Set on <html data-theme="...">. Default (no attribute) = Glossy Indigo.
+   ════════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --bg: #f6faf7;
-  --fg: #0f1e18;
+  /* Glossy Indigo — brand RGB triples for Tailwind */
+  --brand-50:  238 242 255;
+  --brand-100: 224 231 255;
+  --brand-200: 199 210 254;
+  --brand-300: 165 180 252;
+  --brand-400: 129 140 248;
+  --brand-500:  99 102 241;
+  --brand-600:  79  70 229;
+  --brand-700:  67  56 202;
+  --brand-800:  55  48 163;
+  --brand-900:  49  46 129;
+  --brand-950:  30  27  75;
+
+  /* Semantic tokens used in inline styles */
+  --t-btn-bg:          #4f46e5;
+  --t-btn-hover:       #4338ca;
+  --t-btn-shadow:      rgba(79,70,229,0.35);
+  --t-logo-gradient:   linear-gradient(135deg,#4f46e5,#6366f1);
+  --t-hero-bg:         linear-gradient(135deg,#0f172a 0%,#1e1b4b 55%,#0c1a2e 100%);
+  --t-hero-blob-1:     rgba(99,102,241,0.15);
+  --t-hero-blob-2:     rgba(16,185,129,0.08);
+  --t-hero-glow:       linear-gradient(135deg,rgba(99,102,241,0.28),rgba(16,185,129,0.14));
+  --t-cta-bg:          linear-gradient(135deg,#312e81 0%,#4338ca 50%,#1e1b4b 100%);
+  --t-cta-blob-1:      rgba(165,180,252,0.12);
+  --t-cta-blob-2:      rgba(110,231,183,0.10);
+  --t-page-bg:         #f7f8ff;
+  --t-body-blob-1:     rgba(99,102,241,0.07);
+  --t-body-blob-2:     rgba(16,185,129,0.05);
+  --t-focus-ring:      rgba(99,102,241,0.15);
+  --t-badge-color:     #a5b4fc;
+  --t-hero-txt-start:  #c7d2fe;
+  --t-hero-txt-mid:    #a5b4fc;
+  --t-hero-txt-end:    #6ee7b7;
+  --t-footer-gradient: linear-gradient(135deg,#4f46e5,#6366f1);
+  --t-calc-footer-bg:  linear-gradient(135deg,#eef2ff 0%,#f5f3ff 50%,#faf5ff 100%);
+  --t-calc-footer-glow:#818cf8;
+  --t-header-cta-shadow: rgba(79,70,229,0.40);
 }
+
+[data-theme="original"] {
+  /* Classic green — original finplan palette */
+  --brand-50:  240 247 244;
+  --brand-100: 220 238 229;
+  --brand-200: 184 220 203;
+  --brand-300: 139 196 172;
+  --brand-400:  95 168 139;
+  --brand-500:  63 140 111;
+  --brand-600:  47 111  87;
+  --brand-700:  39  89  72;
+  --brand-800:  34  72  59;
+  --brand-900:  30  61  51;
+  --brand-950:  15  33  25;
+
+  --t-btn-bg:          #2f6f57;
+  --t-btn-hover:       #275948;
+  --t-btn-shadow:      rgba(47,111,87,0.30);
+  --t-logo-gradient:   linear-gradient(135deg,#3f8c6f,#2f6f57);
+  --t-hero-bg:         linear-gradient(135deg,#0f172a 0%,#0f2d1a 55%,#081510 100%);
+  --t-hero-blob-1:     rgba(63,140,111,0.15);
+  --t-hero-blob-2:     rgba(63,140,111,0.08);
+  --t-hero-glow:       linear-gradient(135deg,rgba(63,140,111,0.25),rgba(63,140,111,0.12));
+  --t-cta-bg:          linear-gradient(135deg,#1e3d33 0%,#2f6f57 50%,#1a3028 100%);
+  --t-cta-blob-1:      rgba(139,196,172,0.12);
+  --t-cta-blob-2:      rgba(63,140,111,0.10);
+  --t-page-bg:         #f6faf7;
+  --t-body-blob-1:     rgba(63,140,111,0.07);
+  --t-body-blob-2:     rgba(63,140,111,0.04);
+  --t-focus-ring:      rgba(63,140,111,0.15);
+  --t-badge-color:     #8bc4ac;
+  --t-hero-txt-start:  #b8dccb;
+  --t-hero-txt-mid:    #8bc4ac;
+  --t-hero-txt-end:    #a7f3d0;
+  --t-footer-gradient: linear-gradient(135deg,#3f8c6f,#2f6f57);
+  --t-calc-footer-bg:  linear-gradient(135deg,#f0f7f4 0%,#dceee5 50%,#f6faf7 100%);
+  --t-calc-footer-glow:#8bc4ac;
+  --t-header-cta-shadow: rgba(47,111,87,0.35);
+}
+
+/* ── Page background ─────────────────────────────────────────────────────── */
 
 html, body {
   background:
-    radial-gradient(1200px 600px at 90% -10%, rgba(63,140,111,0.10), transparent 60%),
-    radial-gradient(900px 500px at -10% 10%, rgba(14,165,233,0.08), transparent 60%),
-    var(--bg);
-  color: var(--fg);
+    radial-gradient(ellipse 1400px 700px at 85% -15%, var(--t-body-blob-1) 0%, transparent 65%),
+    radial-gradient(ellipse 900px 500px at -5% 70%,  var(--t-body-blob-2) 0%, transparent 60%),
+    var(--t-page-bg);
+  color: #0f172a;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
-.card {
-  @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+/* ── Gradient text (theme-aware) ─────────────────────────────────────────── */
+
+.text-gradient-brand {
+  background: linear-gradient(135deg, var(--t-btn-bg) 0%, var(--t-btn-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
+
+.text-gradient-hero {
+  background: linear-gradient(135deg,
+    var(--t-hero-txt-start) 0%,
+    var(--t-hero-txt-mid)   60%,
+    var(--t-hero-txt-end)  100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+
+.card {
+  @apply bg-white rounded-2xl border border-slate-100;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06), 0 1px 3px rgba(15,23,42,0.04);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* ── Inputs ──────────────────────────────────────────────────────────────── */
 
 .input {
-  @apply w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition;
+  @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition;
+  box-shadow: inset 0 1px 2px rgba(15,23,42,0.04);
 }
-.input:hover { @apply border-slate-400; }
+.input:hover { @apply border-slate-300; }
+.input:focus {
+  @apply border-brand-400;
+  box-shadow: 0 0 0 3px var(--t-focus-ring);
+}
 
 .label {
-  @apply block text-xs font-medium text-slate-600 mb-1;
+  @apply block text-xs font-semibold text-slate-500 mb-1.5 tracking-wide uppercase;
 }
+
+/* ── Section headings ────────────────────────────────────────────────────── */
 
 .section-h {
-  @apply text-sm font-semibold uppercase tracking-wider text-slate-500;
+  @apply text-xs font-bold uppercase tracking-widest text-slate-400;
 }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
 
 .btn {
-  @apply inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-all;
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 select-none;
 }
-.btn-primary { @apply btn bg-brand-600 text-white hover:bg-brand-700 shadow-sm hover:shadow; }
-.btn-ghost { @apply btn bg-slate-100 text-slate-700 hover:bg-slate-200; }
-.btn-outline { @apply btn border border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400; }
 
-/* Nicer number inputs: hide spinners */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.btn-primary {
+  @apply btn text-white;
+  background: var(--t-btn-bg);
+  box-shadow: 0 4px 14px var(--t-btn-shadow);
 }
+.btn-primary:hover {
+  background: var(--t-btn-hover);
+  box-shadow: 0 6px 20px var(--t-btn-shadow);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-ghost   { @apply btn bg-slate-100 text-slate-700 hover:bg-slate-200; }
+.btn-outline {
+  @apply btn border border-slate-200 text-slate-700 bg-white;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05);
+}
+.btn-outline:hover { @apply border-brand-300 text-brand-700 bg-brand-50; }
+
+/* ── Classic theme — flatten shared component styles to match the backed-up
+   design (used by components that don't render a bespoke classic variant,
+   e.g. ResultsView, TimelineChart, the calculators mega-menu) ───────────── */
+
+[data-theme="original"] .card {
+  @apply rounded-xl border-slate-200 shadow-sm;
+  box-shadow: none;
+}
+
+[data-theme="original"] .input {
+  @apply rounded-md border-slate-300 px-3 py-2;
+  box-shadow: none;
+}
+[data-theme="original"] .input:hover  { @apply border-slate-400; }
+[data-theme="original"] .input:focus {
+  @apply border-brand-500;
+  box-shadow: 0 0 0 2px rgba(63,140,111,0.20);
+}
+
+[data-theme="original"] .label {
+  @apply font-medium normal-case tracking-normal text-slate-600 mb-1;
+}
+
+[data-theme="original"] .section-h {
+  @apply text-sm font-semibold tracking-wider text-slate-500;
+}
+
+[data-theme="original"] .btn {
+  @apply rounded-md px-3 py-2 font-medium;
+}
+[data-theme="original"] .btn-primary {
+  box-shadow: none;
+}
+[data-theme="original"] .btn-primary:hover {
+  box-shadow: 0 1px 3px rgba(15,23,42,0.08);
+  transform: none;
+}
+[data-theme="original"] .btn-outline {
+  @apply border-slate-300 bg-white;
+  box-shadow: none;
+}
+[data-theme="original"] .btn-outline:hover {
+  @apply border-slate-400 text-slate-700 bg-slate-50;
+}
+
+/* ── Number inputs — hide spinners ───────────────────────────────────────── */
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
 
 @media print {
   header, footer, .no-print { display: none !important; }
@@ -55,13 +234,29 @@ input[type=number] { -moz-appearance: textfield; }
   .card { box-shadow: none !important; border-color: #d4d4d8 !important; }
 }
 
-/* Highlight animation used by the QuickTour when a step is clicked. */
+/* ── Tour flash ──────────────────────────────────────────────────────────── */
+
 @keyframes tourFlash {
-  0%   { box-shadow: 0 0 0 0 rgba(63, 140, 111, 0.55); }
-  40%  { box-shadow: 0 0 0 6px rgba(63, 140, 111, 0.20); }
-  100% { box-shadow: 0 0 0 0 rgba(63, 140, 111, 0);    }
+  0%   { box-shadow: 0 0 0 0   var(--t-btn-shadow); }
+  40%  { box-shadow: 0 0 0 8px var(--t-focus-ring); }
+  100% { box-shadow: 0 0 0 0   transparent;          }
 }
 .tour-flash {
   animation: tourFlash 1.2s ease-out;
-  border-color: #3f8c6f !important;
+  border-color: var(--t-btn-bg) !important;
 }
+
+/* ── Pulse dot ───────────────────────────────────────────────────────────── */
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+.dot-pulse { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }

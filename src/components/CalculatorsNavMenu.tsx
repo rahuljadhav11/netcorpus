@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { useTheme } from "@/lib/theme";
 
 const NAV_GROUPS: {
   label: string;
@@ -63,6 +64,11 @@ const NAV_GROUPS: {
 export default function CalculatorsNavMenu() {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<number | null>(null);
+  const { theme } = useTheme();
+  const triggerCls =
+    theme === "original"
+      ? "text-slate-600 hover:text-brand-700"
+      : "text-slate-300 hover:text-white";
 
   const handleEnter = () => {
     if (closeTimer.current) {
@@ -84,7 +90,7 @@ export default function CalculatorsNavMenu() {
     >
       <Link
         href="/calculators"
-        className="inline-flex items-center gap-1 hover:text-brand-700 transition"
+        className={`inline-flex items-center gap-1 transition font-medium ${triggerCls}`}
         aria-haspopup="true"
         aria-expanded={open}
       >

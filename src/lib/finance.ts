@@ -267,10 +267,11 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
   let lumpCloseAmount = 0;
   let epfMergedAtRetirement = 0; // EPF balance moved to SIP at retirement (tax-free)
   let npsBalanceAtRetirement = 0; // captured before NPS is split at retirement
-  // Pre-LTCG sipBalance/costBasis captured at retirement — used for computeTax display.
-  // The simulation deducts LTCG immediately so drawdown runs on the net corpus.
-  let sipBalancePreLtcg = 0;
-  let sipCostBasisPreLtcg = 0;
+  // Gross SIP+EPF+NPS balance captured BEFORE loan close at retirement — used for
+  // computeTax display so tax.netCorpus represents the full pre-close corpus minus LTCG.
+  // spendableCorpus = tax.netCorpus - lumpCloseAmount (one deduction, not two).
+  let sipBalancePreLoanClose = 0;
+  let sipCostBasisPreLoanClose = 0;
   const existingAssetValuesAtRetirement: { name: string; assetClass: AssetClass; value: number; annualReturnPct: number }[] = [];
 
   // Track annual-event lump draws for the silent summary.
@@ -313,13 +314,16 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
       }
       // Capture each non-equity existing asset's value at retirement.
       // They are NOT merged into the withdrawal corpus — they are separate wealth
-      // (illiquid or earmarked separately). Stop tracking their growth post-retirement.
+      // (illiquid or earmarked separately). They continue growing post-retirement for
+      // display purposes (graph + table show them as a separate line/column).
       for (const at of assetTracks) {
         if (at.balance > 0.01) {
           existingAssetValuesAtRetirement.push({ name: at.name, assetClass: at.assetClass, value: at.balance, annualReturnPct: at.annualReturnPct });
         }
-        at.balance = 0; // remove from ongoing tracking
       }
+      // Capture gross SIP (after EPF/NPS merge, before loan close) for computeTax.
+      sipBalancePreLoanClose = sipBalance;
+      sipCostBasisPreLoanClose = sipCostBasis;
     }
 
     // Auto-close: any remaining loans are cleared from corpus at retirement,
@@ -334,8 +338,10 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
       for (const l of loans) outstanding += l.balance;
       const paidFromSip = Math.min(outstanding, sipBalance);
       const paidFromEpf = Math.min(outstanding - paidFromSip, epfBalance);
+      if (sipBalance > 0.01 && paidFromSip > 0) {
+        sipCostBasis = sipCostBasis * (sipBalance - paidFromSip) / sipBalance;
+      }
       sipBalance -= paidFromSip;
-      sipCostBasis = Math.max(0, sipCostBasis - paidFromSip);
       epfBalance -= paidFromEpf;
       let remaining = paidFromSip + paidFromEpf;
       lumpCloseAmount = remaining;
@@ -352,9 +358,7 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
     }
 
     // LTCG tax: compute and deduct at the moment of retirement so the entire
-    // post-retirement drawdown runs on net (after-tax) corpus. Pre-deduction
-    // values are preserved in sipBalancePreLtcg / sipCostBasisPreLtcg so that
-    // computeTax (called post-loop) can report the correct gross/net breakdown.
+    // post-retirement drawdown runs on net (after-tax) corpus.
     if (m === retirementMonthIndex) {
       const npsLumpNow = inputs.nps.enabled
         ? npsBalanceAtRetirement * (1 - inputs.nps.annuityAllocationPct / 100)
@@ -365,8 +369,6 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
       const sipGains = Math.max(0, sipPure - sipPureBasis);
       const ltcgTaxable = Math.max(0, sipGains - inputs.ltcgAnnualExemption);
       const ltcgDue = ltcgTaxable * (inputs.ltcgRatePct / 100);
-      sipBalancePreLtcg = sipBalance;
-      sipCostBasisPreLtcg = sipCostBasis;
       sipBalance = Math.max(0, sipBalance - ltcgDue);
     }
 
@@ -477,7 +479,6 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
     const totalLoanBalanceNow = loans.reduce((s, l) => s + l.balance, 0);
     if (debtFreeMonthIndex === null && totalLoanBalanceNow <= 0.01) debtFreeMonthIndex = m;
 
-    // Grow non-equity existing assets pre-retirement (post-retirement they've merged).
     for (const at of assetTracks) {
       if (at.balance > 0.01) at.balance *= (1 + at.rm);
     }
@@ -597,7 +598,7 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
       loanBalances,
       totalLoanBalance: totalLoanBalanceNow,
       otherAssetsBalance: otherAssetsNow,
-      totalCorpus: sipBalance + epfBalance + npsBalance + otherAssetsNow,
+      totalCorpus: sipBalance + epfBalance + npsBalance,
       goalOutflow: goalOutflowsThisMonth.length ? goalOutflowsThisMonth : undefined,
     });
 
@@ -676,16 +677,17 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
 
   const atRetirement = monthly[Math.min(monthly.length - 1, retirementMonthIndex)];
 
-  // sipBalancePreLtcg / sipCostBasisPreLtcg were captured in the loop just before the
-  // LTCG deduction, so they reflect: SIP_pure + EPF_lump + NPS_lump − loan_close.
-  // Subtract EPF and NPS back out so computeTax can attribute each component separately
-  // (it re-adds them via epfBalance and npsBalance args to form grossCorpus).
+  // sipBalancePreLoanClose / sipCostBasisPreLoanClose were captured after EPF/NPS merge
+  // but before loan close. Subtracting EPF and NPS lets computeTax attribute each
+  // component separately (it re-adds them via epfBalance and npsBalance args).
+  // netCorpus from computeTax therefore represents gross corpus minus LTCG — before the
+  // loan close deduction. spendableCorpus = tax.netCorpus - lumpCloseAmount.
   const npsLumpMerged = inputs.nps.enabled
     ? npsBalAtRetirement * (1 - inputs.nps.annuityAllocationPct / 100)
     : 0;
   const tax = computeTax({
-    sipBalance: Math.max(0, sipBalancePreLtcg - epfMergedAtRetirement - npsLumpMerged),
-    sipCostBasis: Math.max(0, sipCostBasisPreLtcg - epfMergedAtRetirement - npsLumpMerged),
+    sipBalance: Math.max(0, sipBalancePreLoanClose - epfMergedAtRetirement - npsLumpMerged),
+    sipCostBasis: Math.max(0, sipCostBasisPreLoanClose - epfMergedAtRetirement - npsLumpMerged),
     epfBalance: epfMergedAtRetirement,
     epsBalance: atRetirement?.epsBalance ?? 0,
     epsMonthlyPension: pensionAtRetirement,
@@ -697,10 +699,10 @@ export function runProjection(inputs: PlanInputs, opts: RunOptions = {}): Projec
     ltcgAnnualExemption: inputs.ltcgAnnualExemption,
   });
 
-  // Spendable corpus at retirement = net corpus after tax, after loan close.
-  // Use this as the canonical corpusAtRetirement — it's what the simulation actually
-  // draws from (sipBalance in the loop was already reduced by LTCG at retirementMonthIndex).
-  const corpusAtRetirement = tax.netCorpus;
+  // Spendable corpus at retirement = net corpus (post-LTCG, pre-loan-close) minus loan close.
+  // tax.netCorpus is gross − LTCG (no loan deduction yet). Subtracting lumpCloseAmount once
+  // here keeps display formulas (tax.netCorpus − lumpCloseAmount) consistent.
+  const corpusAtRetirement = tax.netCorpus - lumpCloseAmount;
 
   const real = {
     corpusAtRetirement: deflate(corpusAtRetirement, inputs.inflationPct, yrsToRet),
@@ -1016,16 +1018,21 @@ export function runScenarios(inputs: PlanInputs): Scenario[] {
     s.result.narrative = narrateScenario(inputs, s.mode, s.result);
   }
 
-  // Pick winner by post-tax net corpus.
+  // Pick winner: primary = corpus lasts to life expectancy, secondary = corpusAtRetirement.
+  // A strategy that sustains always beats one that runs out, regardless of gross corpus.
+  const sustains = (s: (typeof list)[0]) => s.result.corpusExhaustedMonthIndex === null;
   let bestIdx = 0;
   for (let i = 1; i < list.length; i++) {
-    if (list[i].result.tax.netCorpus > list[bestIdx].result.tax.netCorpus) bestIdx = i;
+    const iBetter = sustains(list[i]) && !sustains(list[bestIdx]);
+    const iWorse  = !sustains(list[i]) && sustains(list[bestIdx]);
+    const iHigher = list[i].result.corpusAtRetirement > list[bestIdx].result.corpusAtRetirement;
+    if (iBetter || (!iWorse && iHigher)) bestIdx = i;
   }
-  const bestNet = list[bestIdx].result.tax.netCorpus;
+  const bestNet = list[bestIdx].result.corpusAtRetirement;
   let runnerUp = -Infinity;
   for (let i = 0; i < list.length; i++) {
     if (i === bestIdx) continue;
-    if (list[i].result.tax.netCorpus > runnerUp) runnerUp = list[i].result.tax.netCorpus;
+    if (list[i].result.corpusAtRetirement > runnerUp) runnerUp = list[i].result.corpusAtRetirement;
   }
   list[bestIdx].isRecommended = true;
   list[bestIdx].deltaOverRunnerUp = isFinite(runnerUp) ? bestNet - runnerUp : 0;
