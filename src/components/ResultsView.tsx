@@ -76,7 +76,7 @@ export default function ResultsView({ inputs, result, scenarios }: Props) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "finplan-yearly.csv";
+    a.download = "netcorpus-yearly.csv";
     a.click();
     URL.revokeObjectURL(url);
   };

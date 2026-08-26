@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import InflationCalc from "@/components/calculators/InflationCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Inflation Calculator — Future Purchasing Power",
   description:
     "How much will ₹X today cost in the future? See the purchasing-power loss and how much you'll need to maintain the same lifestyle.",
+  alternates: { canonical: "/calculators/inflation-impact" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <InflationCalc />
+      <CalculatorContent slug="inflation-impact" />
     </div>
   );
 }

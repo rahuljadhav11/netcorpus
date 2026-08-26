@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import PpfCalc from "@/components/calculators/PpfCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "PPF Calculator — Public Provident Fund Maturity",
   description:
     "15-year PPF maturity value. Tax-free at every stage (EEE). Current rate 7.1% (revised quarterly by government).",
+  alternates: { canonical: "/calculators/ppf" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <PpfCalc />
+      <CalculatorContent slug="ppf" />
     </div>
   );
 }

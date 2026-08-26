@@ -14,7 +14,7 @@ export default function SiteHeader() {
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-semibold text-brand-700">
             <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-brand-600 text-white text-sm">₹</span>
-            <span className="text-slate-900">FinPlan</span>
+            <span className="text-slate-900">NetCorpus</span>
             <span className="text-brand-600 text-xs px-1.5 py-0.5 rounded bg-brand-50 border border-brand-100">India</span>
           </Link>
           <nav className="hidden sm:flex items-center gap-5 text-sm text-slate-600">
@@ -41,7 +41,7 @@ export default function SiteHeader() {
             style={{ background: "var(--t-logo-gradient)" }}>
             ₹
           </span>
-          <span className="font-bold text-white tracking-tight text-[15px]">FinPlan</span>
+          <span className="font-bold text-white tracking-tight text-[15px]">NetCorpus</span>
           <span className="text-[11px] font-semibold text-brand-300 px-1.5 py-0.5 rounded-md border border-brand-800/50 bg-brand-950/40">
             India
           </span>

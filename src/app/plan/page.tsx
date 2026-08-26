@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Retirement + Loan Payoff Planner",
   description:
     "Combined retirement and multi-loan payoff planner for Indian households. Fixed and overdraft loans, EPF, SIPs, inflation-adjusted corpus target.",
+  alternates: { canonical: "/plan" },
 };
 
 export default function PlanPage() {

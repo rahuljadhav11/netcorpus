@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 
 export type Theme = "indigo" | "original";
 
-const STORAGE_KEY = "fp-theme";
+const STORAGE_KEY = "netcorpus-theme";
 
 type ThemeContextValue = {
   theme: Theme;

@@ -3,12 +3,13 @@ import "./globals.css";
 import { ThemeProvider } from "@/lib/theme";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://finplan-in.example"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "FinPlan India — Retirement & Loan Planner",
-    template: "%s · FinPlan India",
+    default: "NetCorpus India — Retirement & Loan Planner",
+    template: "%s · NetCorpus India",
   },
   description:
     "Free, private retirement and loan-payoff planner for Indian salaried professionals. Model home loans, overdraft facilities, SIPs, EPF, EPS pension, and post-tax corpus — all in the browser.",
@@ -22,12 +23,14 @@ export const metadata: Metadata = {
     "LTCG on mutual funds",
     "financial planning India",
   ],
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "FinPlan India — Retirement & Loan Planner",
-    description:
-      "Plan retirement while managing home loan, overdraft, EPF/EPS, and SIPs. Post-tax and inflation-adjusted. Runs locally in your browser.",
     type: "website",
     locale: "en_IN",
+    siteName: "NetCorpus India",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
   robots: { index: true, follow: true },
 };

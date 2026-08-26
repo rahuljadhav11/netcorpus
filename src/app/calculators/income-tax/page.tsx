@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import IncomeTaxCalc from "@/components/calculators/IncomeTaxCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Income Tax Calculator — Old vs New Regime (FY 2025-26)",
   description:
     "Auto-compare old and new tax regimes for FY 2025-26. Includes standard deduction, 80C, 80D, HRA, home loan interest, NPS employer contribution, and 4% cess.",
+  alternates: { canonical: "/calculators/income-tax" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <IncomeTaxCalc />
+      <CalculatorContent slug="income-tax" />
     </div>
   );
 }

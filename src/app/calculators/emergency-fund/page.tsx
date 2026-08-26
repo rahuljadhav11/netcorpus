@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import EmergencyFundCalc from "@/components/calculators/EmergencyFundCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Emergency Fund Calculator — How Much Liquid Buffer Do You Need?",
   description:
     "Compute how large your emergency fund should be based on monthly essentials and coverage months. Standard: 6 months; single-earner households: 12.",
+  alternates: { canonical: "/calculators/emergency-fund" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <EmergencyFundCalc />
+      <CalculatorContent slug="emergency-fund" />
     </div>
   );
 }

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import SgbCalc from "@/components/calculators/SgbCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Sovereign Gold Bond (SGB) Calculator",
   description:
     "SGB returns: 2.5% annual coupon plus tax-free capital gain on gold price at maturity. 8-year tenure.",
+  alternates: { canonical: "/calculators/sgb" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <SgbCalc />
+      <CalculatorContent slug="sgb" />
     </div>
   );
 }

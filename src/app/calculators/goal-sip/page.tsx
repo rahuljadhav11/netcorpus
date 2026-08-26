@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import GoalSipCalc from "@/components/calculators/GoalSipCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Goal-based SIP Calculator — Required Monthly SIP for a Target",
   description:
     "Given a financial goal amount and time horizon, computes the monthly SIP required. Optional inflation-adjustment for real goal amounts.",
+  alternates: { canonical: "/calculators/goal-sip" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <GoalSipCalc />
+      <CalculatorContent slug="goal-sip" />
     </div>
   );
 }

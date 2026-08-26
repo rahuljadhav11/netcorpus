@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import LumpSumCalc from "@/components/calculators/LumpSumCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Lump Sum / Compound Interest Calculator",
   description:
     "Future value of a one-time investment at any expected return. Configurable compounding frequency — annual, quarterly, monthly.",
+  alternates: { canonical: "/calculators/lump-sum" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <LumpSumCalc />
+      <CalculatorContent slug="lump-sum" />
     </div>
   );
 }

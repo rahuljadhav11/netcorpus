@@ -11,7 +11,7 @@ export default function SiteFooter() {
       <footer className="border-t border-slate-200 mt-16 py-8 bg-white/50 no-print">
         <div className="mx-auto max-w-6xl px-4 grid sm:grid-cols-3 gap-6 text-xs text-slate-500">
           <div>
-            <div className="font-semibold text-slate-800 mb-1">FinPlan India</div>
+            <div className="font-semibold text-slate-800 mb-1">NetCorpus India</div>
             <p className="leading-relaxed">A private, browser-only planner for Indian salaried households. No data leaves your device.</p>
           </div>
           <div>
@@ -25,6 +25,7 @@ export default function SiteFooter() {
           <div>
             <div className="font-semibold text-slate-800 mb-1">Disclaimer</div>
             <p className="leading-relaxed">This is a planning estimate, not financial advice. Rates, taxes, and EPS rules change — verify before acting. Consult a SEBI-registered advisor for personal decisions.</p>
+            <Link href="/about" className="inline-block mt-2 hover:text-brand-700">About &amp; methodology →</Link>
           </div>
         </div>
       </footer>
@@ -44,7 +45,7 @@ export default function SiteFooter() {
                 style={{ background: "var(--t-logo-gradient)" }}>
                 ₹
               </span>
-              <span className="font-bold text-white text-sm">FinPlan India</span>
+              <span className="font-bold text-white text-sm">NetCorpus India</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               A private, browser-only planner for Indian salaried households. No data leaves your device.
@@ -82,11 +83,12 @@ export default function SiteFooter() {
             <p className="text-xs text-slate-500 leading-relaxed">
               Planning estimate, not financial advice. Rates, taxes, and EPS rules change — verify before acting. Consult a SEBI-registered advisor for personal decisions.
             </p>
+            <Link href="/about" className="inline-block mt-2 text-xs text-slate-400 hover:text-brand-300 transition">About &amp; methodology →</Link>
           </div>
         </div>
 
         <div className="mt-10 pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <p className="text-[11px] text-slate-600">© {new Date().getFullYear()} FinPlan India. Free to use forever.</p>
+          <p className="text-[11px] text-slate-600">© {new Date().getFullYear()} NetCorpus India. Free to use forever.</p>
           <p className="text-[11px] text-slate-600">Made with care for Indian households.</p>
         </div>
       </div>

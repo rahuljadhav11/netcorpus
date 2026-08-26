@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useTheme } from "@/lib/theme";
+import { getAffiliateOffer, type AffiliateOffer } from "@/lib/affiliates";
 
 export default function Shell({
   inputs,
@@ -170,49 +171,90 @@ export function ResultRow({
 
 export function CalculatorFooter({ slug }: { slug: string }) {
   const { theme } = useTheme();
+  const offer = getAffiliateOffer(slug);
 
   if (theme === "original") {
     return (
-      <div className="card p-4 bg-gradient-to-br from-brand-50 via-white to-white">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-          <div>
-            <div className="font-semibold text-slate-900">Want the full picture?</div>
-            <p className="text-xs text-slate-600 mt-1">
-              The main FinPlan India planner rolls this calculation into a 50-year retirement plan alongside your loans, EPF, taxes, trips, and life goals.
-            </p>
+      <div className="space-y-3">
+        {offer && <AffiliateCardClassic offer={offer} />}
+        <div className="card p-4 bg-gradient-to-br from-brand-50 via-white to-white">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+            <div>
+              <div className="font-semibold text-slate-900">Want the full picture?</div>
+              <p className="text-xs text-slate-600 mt-1">
+                The main NetCorpus India planner rolls this calculation into a 50-year retirement plan alongside your loans, EPF, taxes, trips, and life goals.
+              </p>
+            </div>
+            <Link href="/plan" className="btn-primary text-sm flex-none">
+              Open the planner →
+            </Link>
           </div>
-          <Link href="/plan" className="btn-primary text-sm flex-none">
-            Open the planner →
-          </Link>
-        </div>
-        <div className="mt-3 text-[11px] text-slate-500">
-          Simple estimate for {slug.replace(/-/g, " ")}. Assumptions are conservative but rates &amp; taxes will vary — verify before acting.
+          <div className="mt-3 text-[11px] text-slate-500">
+            Simple estimate for {slug.replace(/-/g, " ")}. Assumptions are conservative but rates &amp; taxes will vary — verify before acting.
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-brand-100 p-5"
-      style={{ background: "var(--t-calc-footer-bg)" }}>
-      <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-20"
-        style={{ background: `radial-gradient(circle,var(--t-calc-footer-glow),transparent)` }} />
-      <div className="relative flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-        <div>
-          <div className="font-bold text-slate-900">Want the full picture?</div>
-          <p className="text-xs text-slate-500 mt-1 leading-relaxed max-w-sm">
-            The main FinPlan India planner rolls this into a 50-year retirement plan alongside your loans, EPF, taxes, trips, and life goals.
-          </p>
+    <div className="space-y-3">
+      {offer && <AffiliateCardGlossy offer={offer} />}
+      <div className="relative overflow-hidden rounded-2xl border border-brand-100 p-5"
+        style={{ background: "var(--t-calc-footer-bg)" }}>
+        <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-20"
+          style={{ background: `radial-gradient(circle,var(--t-calc-footer-glow),transparent)` }} />
+        <div className="relative flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+          <div>
+            <div className="font-bold text-slate-900">Want the full picture?</div>
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed max-w-sm">
+              The main NetCorpus India planner rolls this into a 50-year retirement plan alongside your loans, EPF, taxes, trips, and life goals.
+            </p>
+          </div>
+          <Link href="/plan"
+            className="flex-none inline-flex items-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all hover:-translate-y-0.5"
+            style={{ background: "var(--t-btn-bg)", boxShadow: "0 4px 14px var(--t-btn-shadow)" }}>
+            Open the planner →
+          </Link>
         </div>
-        <Link href="/plan"
-          className="flex-none inline-flex items-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all hover:-translate-y-0.5"
-          style={{ background: "var(--t-btn-bg)", boxShadow: "0 4px 14px var(--t-btn-shadow)" }}>
-          Open the planner →
-        </Link>
+        <div className="mt-3 text-[11px] text-slate-400 relative">
+          Simple estimate for {slug.replace(/-/g, " ")}. Rates &amp; taxes will vary — verify before acting.
+        </div>
       </div>
-      <div className="mt-3 text-[11px] text-slate-400 relative">
-        Simple estimate for {slug.replace(/-/g, " ")}. Rates &amp; taxes will vary — verify before acting.
+    </div>
+  );
+}
+
+function AffiliateCardClassic({ offer }: { offer: AffiliateOffer }) {
+  return (
+    <div className="card p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+      <div>
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          Partner · {offer.category}
+        </span>
+        <p className="text-sm text-slate-700 mt-0.5">{offer.blurb}</p>
       </div>
+      <a href={offer.href} target="_blank" rel="noopener noreferrer sponsored"
+        className="btn-outline text-sm flex-none">
+        {offer.ctaLabel} →
+      </a>
+    </div>
+  );
+}
+
+function AffiliateCardGlossy({ offer }: { offer: AffiliateOffer }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+      <div>
+        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+          Partner · {offer.category}
+        </span>
+        <p className="text-sm text-slate-600 mt-1">{offer.blurb}</p>
+      </div>
+      <a href={offer.href} target="_blank" rel="noopener noreferrer sponsored"
+        className="flex-none inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl border border-brand-200 text-brand-700 hover:bg-brand-50 transition-all">
+        {offer.ctaLabel} →
+      </a>
     </div>
   );
 }

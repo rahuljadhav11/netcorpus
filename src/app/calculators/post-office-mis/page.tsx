@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import PostOfficeMisCalc from "@/components/calculators/PostOfficeMisCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Post Office MIS Calculator — Monthly Income Scheme",
   description:
     "Post Office Monthly Income Scheme: monthly interest payout at 7.4% for a 5-year term. Principal returned at maturity. Max ₹9L / ₹15L (single / joint).",
+  alternates: { canonical: "/calculators/post-office-mis" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <PostOfficeMisCalc />
+      <CalculatorContent slug="post-office-mis" />
     </div>
   );
 }

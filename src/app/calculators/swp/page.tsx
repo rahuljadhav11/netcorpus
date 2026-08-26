@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import SwpCalc from "@/components/calculators/SwpCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "SWP Calculator — Corpus Longevity with Monthly Withdrawals",
   description:
     "Systematic Withdrawal Plan calculator: how long does a retirement corpus last if you pull ₹X per month at Y% return?",
+  alternates: { canonical: "/calculators/swp" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <SwpCalc />
+      <CalculatorContent slug="swp" />
     </div>
   );
 }

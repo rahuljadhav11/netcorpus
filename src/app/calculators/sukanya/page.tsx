@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import SukanyaCalc from "@/components/calculators/SukanyaCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Sukanya Samriddhi Yojana Calculator — Girl Child Savings",
   description:
     "SSY maturity value at age 21. 8.2% tax-free interest (EEE). Contributions for 15 years; matures at 21.",
+  alternates: { canonical: "/calculators/sukanya" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <SukanyaCalc />
+      <CalculatorContent slug="sukanya" />
     </div>
   );
 }

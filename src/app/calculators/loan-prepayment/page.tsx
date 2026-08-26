@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import LoanPrepaymentCalc from "@/components/calculators/LoanPrepaymentCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Loan Prepayment Calculator — Interest Saved & New Tenure",
   description:
     "See how a one-time prepayment on your loan affects tenure and total interest. Compare reduce-tenure vs reduce-EMI options.",
+  alternates: { canonical: "/calculators/loan-prepayment" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <LoanPrepaymentCalc />
+      <CalculatorContent slug="loan-prepayment" />
     </div>
   );
 }

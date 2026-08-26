@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "How to Plan Early Retirement in India — Realistic Corpus Math",
   description:
     "A grounded guide to planning early retirement in India: how to size your corpus, why inflation compounds against you, and how loan payoff timing changes the picture.",
+  alternates: { canonical: "/guides/early-retirement-india" },
 };
 
 const jsonLd = {

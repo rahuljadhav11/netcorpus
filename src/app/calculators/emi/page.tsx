@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import EmiCalc from "@/components/calculators/EmiCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "EMI Calculator — Home / Car / Personal Loan + Amortization",
   description:
     "Reducing-balance EMI calculator with a full month-by-month amortization schedule. Works for home, car, and personal loans.",
+  alternates: { canonical: "/calculators/emi" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <EmiCalc />
+      <CalculatorContent slug="emi" />
     </div>
   );
 }

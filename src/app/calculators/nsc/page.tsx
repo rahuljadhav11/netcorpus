@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import NscCalc from "@/components/calculators/NscCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "NSC Calculator — National Savings Certificate",
   description:
     "5-year NSC maturity value at 7.7% annually compounded. Investments qualify for section 80C deduction.",
+  alternates: { canonical: "/calculators/nsc" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <NscCalc />
+      <CalculatorContent slug="nsc" />
     </div>
   );
 }

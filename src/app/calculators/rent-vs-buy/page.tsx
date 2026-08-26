@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import RentVsBuyCalc from "@/components/calculators/RentVsBuyCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Rent vs Buy Calculator — Should You Buy a Home in India?",
   description:
     "Compares net worth after N years under two scenarios: buying with a home loan vs renting and investing the down-payment + EMI-rent surplus.",
+  alternates: { canonical: "/calculators/rent-vs-buy" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <RentVsBuyCalc />
+      <CalculatorContent slug="rent-vs-buy" />
     </div>
   );
 }

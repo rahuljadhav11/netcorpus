@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import StepSipCalc from "@/components/calculators/StepSipCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Step-up SIP Calculator — SIP with Annual Increase",
   description:
     "Model a SIP that grows every year at your salary-hike rate. Compare against a flat SIP to see the compounding advantage.",
+  alternates: { canonical: "/calculators/step-sip" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <StepSipCalc />
+      <CalculatorContent slug="step-sip" />
     </div>
   );
 }

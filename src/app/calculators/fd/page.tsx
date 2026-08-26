@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import FdCalc from "@/components/calculators/FdCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "FD Calculator — Fixed Deposit Maturity + Post-Tax Return",
   description:
     "Bank FD maturity value with quarterly compounding. Includes post-tax return based on your income tax slab.",
+  alternates: { canonical: "/calculators/fd" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <FdCalc />
+      <CalculatorContent slug="fd" />
     </div>
   );
 }

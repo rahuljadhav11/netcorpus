@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://finplan-in.example";
+  const base = SITE_URL;
   const now = new Date();
   const calcSlugs = [
     // Investments
@@ -30,5 +31,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/guides`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/guides/early-retirement-india`, lastModified: now, changeFrequency: "monthly", priority: 0.65 },
     { url: `${base}/guides/overdraft-vs-fixed-emi`, lastModified: now, changeFrequency: "monthly", priority: 0.65 },
+    { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
   ];
 }

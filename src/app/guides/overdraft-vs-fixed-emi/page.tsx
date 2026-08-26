@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Overdraft Home Loan vs Fixed EMI — How Prepayment Actually Works",
   description:
     "A clear comparison of overdraft/flexi home loans (SBI MaxGain, ICICI Money Saver) and traditional fixed-EMI loans in India. What actually happens when you prepay, month by month.",
+  alternates: { canonical: "/guides/overdraft-vs-fixed-emi" },
 };
 
 export default function Page() {

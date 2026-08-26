@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import ScssCalc from "@/components/calculators/ScssCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "SCSS Calculator — Senior Citizen Savings Scheme (8.2%)",
   description:
     "Post Office / bank SCSS: quarterly interest payout at 8.2% p.a. for 5 years. Deposit up to ₹30 lakh. Includes 80C benefit.",
+  alternates: { canonical: "/calculators/scss" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <ScssCalc />
+      <CalculatorContent slug="scss" />
     </div>
   );
 }

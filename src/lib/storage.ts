@@ -6,7 +6,7 @@ import { defaultInputs } from "./defaults";
  * that old saved data can't be safely merged. Otherwise, forward-compatible
  * additions (new optional fields) are handled by the deep-merge in load().
  */
-export const STORAGE_KEY = "finplan.inputs.v1";
+export const STORAGE_KEY = "netcorpus.inputs.v1";
 
 /** Load user inputs from localStorage. Returns null if nothing is saved or
  *  the stored blob is corrupt. Merges with `defaultInputs` so new fields

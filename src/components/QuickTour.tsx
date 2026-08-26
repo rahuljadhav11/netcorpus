@@ -65,7 +65,7 @@ const STEPS: Step[] = [
   },
 ];
 
-const LS_KEY = "finplan.tour.dismissed";
+const LS_KEY = "netcorpus.tour.dismissed";
 
 export default function QuickTour() {
   // null until we've read localStorage — avoids a hydration flash.

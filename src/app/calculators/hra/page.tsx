@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import HraCalc from "@/components/calculators/HraCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "HRA Exemption Calculator — Section 10(13A)",
   description:
     "House Rent Allowance exemption: the least of (actual HRA, 50%/40% of Basic, rent − 10% of Basic). Metro / non-metro handled.",
+  alternates: { canonical: "/calculators/hra" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <HraCalc />
+      <CalculatorContent slug="hra" />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Guides",
   description: "Grounded, non-hype guides on retirement planning and home loans for Indian households.",
+  alternates: { canonical: "/guides" },
 };
 
 const guides = [

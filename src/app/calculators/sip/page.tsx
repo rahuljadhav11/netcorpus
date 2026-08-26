@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import SipCalc from "@/components/calculators/SipCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "SIP Calculator — Monthly SIP Future Value",
   description:
     "Calculate the future value of your monthly SIP (Systematic Investment Plan) at any expected return and duration. Free, private, mobile-first.",
+  alternates: { canonical: "/calculators/sip" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <SipCalc />
+      <CalculatorContent slug="sip" />
     </div>
   );
 }

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import TermInsuranceCalc from "@/components/calculators/TermInsuranceCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "Term Insurance Calculator — Recommended Cover Amount",
   description:
     "Human Life Value method: recommends a term-insurance sum assured based on your dependents' future expenses, existing corpus, and outstanding loans.",
+  alternates: { canonical: "/calculators/term-insurance" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <TermInsuranceCalc />
+      <CalculatorContent slug="term-insurance" />
     </div>
   );
 }

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import RdCalc from "@/components/calculators/RdCalc";
+import CalculatorContent from "@/components/calculators/CalculatorContent";
 
 export const metadata: Metadata = {
   title: "RD Calculator — Recurring Deposit Maturity",
   description:
     "Recurring deposit maturity with quarterly compounding — the standard Indian bank / Post Office RD formula.",
+  alternates: { canonical: "/calculators/rd" },
 };
 
 export default function Page() {
@@ -17,6 +19,7 @@ export default function Page() {
         </p>
       </div>
       <RdCalc />
+      <CalculatorContent slug="rd" />
     </div>
   );
 }
